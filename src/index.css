@@ -104,3 +104,8 @@ main {
   font-weight: 700;
   text-shadow: 3px 3px rgba(50, 50, 70, 0.5);
 }
+
+.weather-feels {
+  font-size: 18px;
+  text-shadow: 3px 3px rgba(50, 50, 70, 0.5);
+}
