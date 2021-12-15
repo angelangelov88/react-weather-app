@@ -60,7 +60,11 @@ function App() {
           />
         </div>
         
-        <p id='initialMessage'>Please type a city or country name to get the current weather</p>
+        <div id='initialMessage'>
+        <p>Please type a city or country name to get the current weather</p>
+        <br></br>
+        <p style={{fontSize: "12px"}}>Please note that the country code has to be added if the same city name is available in more than one country. For example, Cambridge, US or Cambridge, GB.</p>
+        </div>
         {(weather.message) ? (
           <p className='error'>Please make sure the name is correct and try again</p>
         ) :('')}
