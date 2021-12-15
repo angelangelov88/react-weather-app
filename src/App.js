@@ -21,10 +21,12 @@ function App() {
       .then(result => {
         setWeather(result)
         setQuery('')
-        // console.log(result)
+        document.getElementById('initialMessage').style.display = "none"
       })
     }
+
   }
+
 
   const dateBuilder = (d) => {
     let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -42,9 +44,10 @@ function App() {
   return (
     <div className={
       (typeof weather.main != "undefined") 
-      ? ((weather.main.temp > 16) 
-        ? 'app warm' : 'app') 
-      : 'app'}>
+      ? (
+        (weather.main.temp > 16) ? 'app warm' :
+        (weather.main.temp < 5) ? 'app' : 'app cold' ) 
+      : 'app cold'}>
       <main>
         <div className="search-box">
           <input 
@@ -56,6 +59,11 @@ function App() {
             onKeyPress={search}
           />
         </div>
+        
+        <p id='initialMessage'>Please type a city or country name to get the current weather</p>
+        {(weather.message) ? (
+          <p className='error'>Please make sure the name is correct and try again</p>
+        ) :('')}
         {(typeof weather.main != "undefined") ? (
           <div>
             <div className="location-box">
@@ -69,7 +77,6 @@ function App() {
               <div className="weather">{weather.weather[0].main}</div>
             </div>
           </div>
-
         ) : ('')}
       </main>
     </div>

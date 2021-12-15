@@ -9,17 +9,21 @@ body {
 }
 
 .app {
-  background-image: url('./assets/cold-bg.jpg');
+  background-image: url('./assets/cold-bg2.jpg');
   background-size: cover;
   background-position: bottom;
   transition: all ease-out 0.6s;
-  max-width: 500px;
+  /* max-width: 500px; */
   margin-left: auto;
   margin-right: auto;
 }
 
+.app.cold {
+  background-image: url('./assets/cold-bg3.jpg');
+}
+
 .app.warm {
-  background-image: url('./assets/warm-bg.jpg');
+  background-image: url('./assets/warm-bg2.jpg');
 }
 
 main {
@@ -31,7 +35,11 @@ main {
 .search-box {
   width: 100%;
   margin: 0 0 75px;
+  max-width: 500px;
+  margin: auto;
+  margin-bottom: 5rem;
 }
+
 
 .search-box .search-bar {
   display: block;
@@ -108,4 +116,22 @@ main {
 .weather-feels {
   font-size: 18px;
   text-shadow: 3px 3px rgba(50, 50, 70, 0.5);
+}
+
+.error, #initialMessage {
+  color: red;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 5px;
+  padding: 10px;
+  width: 86%;
+  font-size: 20px;
+  text-align: center;
+  margin: auto;
+  max-width: 500px;
+}
+
+#initialMessage {
+  color: white;
+  background-color: rgba(50, 50, 70, 0.5);
+
 }
