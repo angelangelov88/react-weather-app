@@ -1,5 +1,5 @@
 import './App.css';
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import env from 'react-dotenv';
 
 const API_KEY = process.env.REACT_APP_API_KEY
@@ -14,33 +14,34 @@ function App() {
   const [query, setQuery] = useState('')
   const [weather, setWeather] = useState({})
   const [city, setCity] = useState({})
-
-  const [lon, setLon] = useState({})
-  const [lat, setLat] = useState({})
+  const [weatherShown, setWeatherShown] = useState(false)
+  const [linksShown, setLinksShown] = useState(false)
+  const [initialMessageShown, setInitialMessageShown] = useState(true)
 
   const search = evt => {
     if (evt.key === "Enter") {
-      // fetch(`${api.base}weather?q=${query}&units=metric&APPID=${api.key}`)
       fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=10&appid=${api.key}`)
       .then(res => res.json())
       .then(result => {
         setCity(result)
         setQuery('')
-        document.getElementById('initialMessage').style.display = "none"
-        console.log(result.lon)
-        setLon(result.lan)
-        setLat(result.lon)
+        setInitialMessageShown(false)
+        setLinksShown(true)
+        setWeatherShown(false)
+
       })
     }
   }
 
-  const searchWeather = (lon, lat) => {
 
-         fetch(`${api.base}weather?lat={lat}&lon={lon}&APPID=${api.key}`)
+  const searchWeather = (index) => {
+
+         fetch(`${api.base}weather?lat=${index.lat}&lon=${index.lon}&units=metric&APPID=${api.key}`)
             .then(res => res.json())
             .then(result => {
               setWeather(result)
-              console.log(result)
+              setLinksShown(false)
+              setWeatherShown(true)
             })
   }
 
@@ -77,27 +78,28 @@ function App() {
           />
         </div>
         
-        <div id='initialMessage'>
-        <p>Please type a city or country name to get the current weather</p>
-        <br></br>
-        <p style={{fontSize: "12px"}}>Please note that the country code has to be added if the same city name is available in more than one country. For example, Cambridge, US or Cambridge, GB.</p>
+        { initialMessageShown && 
+          <div id='initialMessage'>
+            <p>Please type a city or country name to get the current weather</p>
         </div>
+        }
 
         <div>
           {(weather.message) ? (
             <p className='error'>Please make sure the name is correct and try again</p>
-          ) :('')}
+          ) :(''),
+          console.log(weather.message)}
         </div>
 
 
-        <div className='linksContainer'>
+    { linksShown &&      
+       <div className='linksContainer'>
           {(city.length > 0) ? (
             <div>
             {
-             console.log(city),
               city.map((index, id) => {
                 return (
-                  <p className='linksCities' key={id} onClick={searchWeather}>{ index.name }, { index.state}, { index.country }
+                  <p className='linksCities' key={id} onClick={() => searchWeather(index)}>{ index.name }, { index.state}, { index.country }
                   </p>
                 )
           })}
@@ -105,9 +107,10 @@ function App() {
           ) : ('')      
           }
         </div>
+}
 
-        {(typeof weather.main != "undefined") ? (
-          <div>
+        { weatherShown  ? (
+          <div id="weather-container" style={{ display: weatherShown ? "block" : "none" }}>
             <div className="location-box">
               <div className="location">{weather.name}, {weather.sys.country}</div>
               <div className="date">{dateBuilder(new Date())}</div>
