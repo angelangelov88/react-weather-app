@@ -1,6 +1,7 @@
 import './App.css';
 import { useEffect, useState } from 'react'
 import env from 'react-dotenv';
+import { CountryCodes } from './CountryCodes'
 
 const API_KEY = process.env.REACT_APP_API_KEY
 const BASE = process.env.REACT_APP_BASE
@@ -28,9 +29,8 @@ function App() {
         setInitialMessageShown(false)
         setLinksShown(true)
         setWeatherShown(false)
-
       })
-    }
+        }
   }
 
 
@@ -85,10 +85,10 @@ function App() {
         }
 
         <div>
-          {(weather.message) ? (
+          {(city.length == 0) ? (
             <p className='error'>Please make sure the name is correct and try again</p>
-          ) :(''),
-          console.log(weather.message)}
+          ) :('')
+        }
         </div>
 
 
@@ -99,7 +99,9 @@ function App() {
             {
               city.map((index, id) => {
                 return (
-                  <p className='linksCities' key={id} onClick={() => searchWeather(index)}>{ index.name }, { index.state}, { index.country }
+                  <p className='linksCities' key={id} onClick={() => searchWeather(index)}>{ index.name + ','} { 
+                    typeof(index.state) != 'undefined'  && index.state + ','  
+                  } { index.country ? `${CountryCodes.filter(country => country.alpha2 === index.country.toLowerCase())[0].name}` : ""}
                   </p>
                 )
           })}
