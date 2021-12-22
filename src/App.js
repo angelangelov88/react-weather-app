@@ -17,21 +17,40 @@ function App() {
   const [weatherShown, setWeatherShown] = useState(false)
   const [linksShown, setLinksShown] = useState(false)
   const [initialMessageShown, setInitialMessageShown] = useState(true)
+  const [emptyErrorShown, setEmptyErrorShown] = useState(false)
+  const [genericErrorShown, setGenericErrorShown] = useState(false)
 
 // This is the search function which is quering the API endpoint for the user input and then returns the result and sets the city state to it. It is used later in the rendering
   const search = evt => {
     if (evt.key === "Enter") {
       fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=10&appid=${api.key}`)
-      .then(res => res.json())
-      .then(result => {
-        setCity(result)
-//Set the query to empty string to make sure the user can search another town
-        setQuery('')
-//These states are used to make sure that the component that is needed is shown and vise-versa
-        setInitialMessageShown(false)
-        setLinksShown(true)
-        setWeatherShown(false)
-      })
+      .then(res => {
+        if (res.status >= 200 && res.status <= 299) {
+          res.json()
+            .then(result => {
+            setCity(result)
+    //Set the query to empty string to make sure the user can search another town
+            setQuery('')
+    //These states are used to make sure that the component that is needed is shown and vise-versa
+            setInitialMessageShown(false)
+            setLinksShown(true)
+            setWeatherShown(false)
+            setEmptyErrorShown(false)
+            setGenericErrorShown(false)
+          })
+//I added this extra if statement to make sure I show different errors based on the error type. Because the API does not return an error when incorrect city is typed and instead returns an empty array, I added the code here to show the error genericErrorShown which will be shown if incorrect data is typed. Alternatively, if the user types an empty string it will return the emptyErrorShown.
+        } else if (city.length === 0) {
+            setGenericErrorShown(true)
+            setQuery('')
+        } else {
+            setEmptyErrorShown(true)
+            setWeatherShown(false)
+            setLinksShown(false)
+            setInitialMessageShown(false)
+            setQuery('')
+            setGenericErrorShown(false)
+        }
+      })     
     }
   }
 
@@ -43,6 +62,7 @@ function App() {
               setWeather(result)
               setLinksShown(false)
               setWeatherShown(true)
+              setGenericErrorShown(false)
             })
           }
 
@@ -83,14 +103,19 @@ function App() {
 {/* This is the initial message shown which state changes when the search function is called and it gets hidden */}
         { initialMessageShown && 
           <div id='initialMessage'>
-            <p>Please type a city or country name to get the current weather</p>
+            <p>Please type a city name and press Enter to get the current weather</p>
           </div>
         }
 {/* This is the error message which is displayed if the search function returns an empty array */}
         <div>
-          {(city.length === 0) ? (
+          {( genericErrorShown || city.length === 0 ) ? (
             <p className='error'>Please make sure the name is correct and try again</p>
             ) :('')
+        }
+{/* This is the error returned if the user searches for an empty string */}
+        { (emptyErrorShown) ? (
+            <p className='error'>Please type a city name</p>
+          ) : ('')
         }
         </div>
 
