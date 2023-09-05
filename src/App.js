@@ -147,7 +147,7 @@ function App() {
               <div className="location">{weather.name}
               <p style={{fontSize: "20px"}}>
               {
-              weather.sys.country ? `${CountryCodes.filter(country => country.alpha2 === weather.sys.country.toLowerCase())[0].name}` : ""}
+              weather?.sys?.country ? `${CountryCodes?.filter(country => country?.alpha2 === weather?.sys?.country?.toLowerCase())[0]?.name}` : ""}
               </p>
               </div>
               <br></br>
@@ -155,10 +155,10 @@ function App() {
               </div>
             </div>
             <div className="weather-box">
-              <div className="temp">{Math.round(weather.main.temp)}°C
-              <p className="weather-feels">Feels like {Math.round(weather.main.feels_like)}°C</p>
+              <div className="temp">{Math.round(weather?.main?.temp)}°C
+              <p className="weather-feels">Feels like {Math.round(weather?.main?.feels_like)}°C</p>
               </div>
-              <div className="weather">{weather.weather[0].main}</div>
+              <div className="weather">{weather?.weather[0]?.main}</div>
             </div>
           </div>
         ) : ('')}
