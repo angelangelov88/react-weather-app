@@ -2,8 +2,8 @@ import './App.css';
 import { useState } from 'react'
 import { CountryCodes } from './CountryCodes'
 
-const API_KEY = process.env.REACT_APP_API_KEY
-const BASE = process.env.REACT_APP_BASE
+const API_KEY = import.meta.env.VITE_API_KEY
+const BASE = import.meta.env.VITE_BASE
 
 const api = {
   key: API_KEY,
