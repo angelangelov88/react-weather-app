@@ -136,6 +136,8 @@ main {
 }
 
 .linksCities {
+  display: block;
+  width: 100%;
   color: white;
   border-radius: 10px;
   border: 1px gray solid;
@@ -144,10 +146,20 @@ main {
   padding: 10px;
   margin-bottom: 5px;
   background-color: rgba(50, 50, 70, 0.8);
+  text-align: left;
 }
 
 .linksContainer {
   max-width: 500px;
   margin-left: auto;
   margin-right: auto;
+  margin-top: 30px;
+}
+
+.other-cities-label {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
