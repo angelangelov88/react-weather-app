@@ -1,5 +1,4 @@
 import { useState, useCallback, useMemo } from 'react'
-import { CountryCodes } from '../CountryCodes'
 
 export type GeoCity = {
   name: string
@@ -47,8 +46,7 @@ export type View = 'idle' | 'weather' | 'error-notfound' | 'error-empty' | 'load
 const API_KEY = import.meta.env.VITE_API_KEY as string
 const BASE = import.meta.env.VITE_BASE as string
 
-export const getCountryName = (code: string) =>
-  CountryCodes.find((c) => c.alpha2 === code.toLowerCase())?.name ?? code
+export { getCountryName } from '../helpers/weatherHelpers'
 
 export const useWeather = () => {
   const [query, setQuery] = useState('')

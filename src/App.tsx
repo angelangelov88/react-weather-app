@@ -1,26 +1,8 @@
 import './App.css'
 import { useWeather } from './hooks/useWeather'
+import { dateBuilder } from './helpers/weatherHelpers'
 import SearchBar from './components/SearchBar'
 import WeatherDisplay from './components/WeatherDisplay'
-
-const dateBuilder = (d: Date) => {
-  const months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ]
-  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-  return `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`
-}
 
 const today = dateBuilder(new Date())
 
