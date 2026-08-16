@@ -5,8 +5,18 @@ import WeatherDisplay from './components/WeatherDisplay'
 
 const dateBuilder = (d: Date) => {
   const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December',
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ]
   const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
   return `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`
@@ -15,8 +25,20 @@ const dateBuilder = (d: Date) => {
 const today = dateBuilder(new Date())
 
 const App = () => {
-  const { query, setQuery, otherCities, weather, view, bgClass, handleSearch, handleCitySelect } =
-    useWeather()
+  const {
+    query,
+    setQuery,
+    otherCities,
+    weather,
+    forecast,
+    forecastLoading,
+    view,
+    bgClass,
+    handleSearch,
+    handleCitySelect,
+    handleForecastRequest,
+    mainCityKey,
+  } = useWeather()
 
   return (
     <div className={bgClass}>
@@ -43,10 +65,14 @@ const App = () => {
 
         {view === 'weather' && weather && (
           <WeatherDisplay
+            key={mainCityKey}
             weather={weather}
             today={today}
             otherCities={otherCities}
             onCitySelect={handleCitySelect}
+            forecast={forecast}
+            forecastLoading={forecastLoading}
+            onForecastRequest={handleForecastRequest}
           />
         )}
       </main>

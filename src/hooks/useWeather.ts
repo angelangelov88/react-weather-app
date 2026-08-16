@@ -15,10 +15,31 @@ export type WeatherData = {
     temp: number
     feels_like: number
   }
-  weather: { main: string }[]
+  weather: { main: string; icon: string }[]
   sys: {
     country: string
   }
+}
+
+export type ForecastEntry = {
+  dt: number
+  dt_txt: string
+  main: {
+    temp: number
+    feels_like: number
+    temp_min: number
+    temp_max: number
+    humidity: number
+  }
+  weather: { main: string; description: string; icon: string }[]
+  wind: {
+    speed: number
+  }
+  pop: number
+}
+
+export type ForecastData = {
+  list: ForecastEntry[]
 }
 
 export type View = 'idle' | 'weather' | 'error-notfound' | 'error-empty' | 'loading'
@@ -34,14 +55,16 @@ export const useWeather = () => {
   const [mainCity, setMainCity] = useState<GeoCity | null>(null)
   const [otherCities, setOtherCities] = useState<GeoCity[]>([])
   const [weather, setWeather] = useState<WeatherData | null>(null)
+  const [forecast, setForecast] = useState<ForecastEntry[] | null>(null)
+  const [forecastLoading, setForecastLoading] = useState(false)
   const [view, setView] = useState<View>('idle')
 
   const bgClass = useMemo(() => {
-    if (!weather || view !== 'weather') return 'app cold'
+    if (!weather) return 'app cold'
     if (weather.main.temp > 16) return 'app warm'
     if (weather.main.temp < 5) return 'app'
     return 'app cold'
-  }, [weather, view])
+  }, [weather])
 
   const fetchWeather = useCallback(async (city: GeoCity): Promise<WeatherData | null> => {
     const res = await fetch(
@@ -68,6 +91,7 @@ export const useWeather = () => {
           setView('error-notfound')
           return
         }
+        setForecast(null)
         setOtherCities(cities.slice(1))
         setMainCity(cities[0])
         const weatherData = await fetchWeather(cities[0])
@@ -88,6 +112,7 @@ export const useWeather = () => {
       try {
         const weatherData = await fetchWeather(city)
         if (weatherData && mainCity) {
+          setForecast(null)
           setOtherCities((prev) => [
             mainCity,
             ...prev.filter((c) => c.lat !== city.lat || c.lon !== city.lon),
@@ -103,5 +128,35 @@ export const useWeather = () => {
     [fetchWeather, mainCity]
   )
 
-  return { query, setQuery, otherCities, weather, view, bgClass, handleSearch, handleCitySelect }
+  const handleForecastRequest = useCallback(async () => {
+    if (!mainCity) return
+    setForecastLoading(true)
+    try {
+      const res = await fetch(
+        `${BASE}/data/2.5/forecast?lat=${mainCity.lat}&lon=${mainCity.lon}&units=metric&appid=${API_KEY}`
+      )
+      if (!res.ok) throw new Error('Forecast fetch failed')
+      const data = (await res.json()) as ForecastData
+      setForecast(data.list)
+    } catch {
+      // silently fail — button stays visible to retry
+    } finally {
+      setForecastLoading(false)
+    }
+  }, [mainCity])
+
+  return {
+    query,
+    setQuery,
+    otherCities,
+    weather,
+    forecast,
+    forecastLoading,
+    view,
+    bgClass,
+    handleSearch,
+    handleCitySelect,
+    handleForecastRequest,
+    mainCityKey: mainCity ? `${mainCity.lat}-${mainCity.lon}` : '',
+  }
 }

@@ -11,19 +11,21 @@ body {
 .app {
   background-image: url('./assets/cold-bg2.jpg');
   background-size: cover;
-  background-position: bottom;
-  transition: all ease-out 0.6s;
-  /* max-width: 500px; */
+  background-position: center;
+  /* background-attachment: fixed; */
+  transition: background-image ease-out 0.6s;
   margin-left: auto;
   margin-right: auto;
 }
 
 .app.cold {
   background-image: url('./assets/cold-bg3.jpg');
+  background-attachment: fixed;
 }
 
 .app.warm {
   background-image: url('./assets/warm-bg2.jpg');
+  background-attachment: fixed;
 }
 
 main {
@@ -85,12 +87,19 @@ main {
 }
 
 .weather-box {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
 
 .weather-box .temp {
   position: relative;
-  display: inline-block;
+  display: inline-grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: 8px;
   margin: 30px auto;
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: 16px;
@@ -110,11 +119,6 @@ main {
   color: #fff;
   font-size: 48px;
   font-weight: 700;
-  text-shadow: 3px 3px rgba(50, 50, 70, 0.5);
-}
-
-.weather-feels {
-  font-size: 18px;
   text-shadow: 3px 3px rgba(50, 50, 70, 0.5);
 }
 
@@ -163,4 +167,134 @@ main {
   margin-bottom: 8px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+
+.weather-icon-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
+.weather-icon {
+  width: 80px;
+  height: 80px;
+  filter: drop-shadow(2px 4px 4px rgba(0, 0, 0, 0.4));
+  grid-row: 1;
+  grid-column: 1;
+}
+
+.weather-feels {
+  font-size: 18px;
+  text-shadow: 3px 3px rgba(50, 50, 70, 0.5);
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+.forecast-btn-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.forecast-btn {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 20px;
+  padding: 10px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.forecast-btn:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.35);
+}
+
+.forecast-btn.active {
+  background-color: rgba(255, 255, 255, 0.4);
+  border-color: rgba(255, 255, 255, 0.8);
+}
+
+.forecast-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.forecast-container {
+  margin: 24px auto 0;
+}
+
+.forecast-label {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.forecast-scroll {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: none;
+}
+
+@media (max-width: 600px) {
+  .forecast-scroll {
+    justify-content: flex-start;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.3) transparent;
+  }
+}
+
+.forecast-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  min-width: 90px;
+  width: 90px;
+  min-height: 180px;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 10px 8px;
+  flex-shrink: 0;
+}
+
+.forecast-time {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
+  text-align: center;
+}
+
+.forecast-icon {
+  width: 44px;
+  height: 44px;
+}
+
+.forecast-temp {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.forecast-desc {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 11px;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.forecast-meta {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 11px;
+  text-align: center;
 }
