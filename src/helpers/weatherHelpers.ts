@@ -15,14 +15,32 @@ export const dateBuilder = (d: Date) => {
   return `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`
 }
 
-export const formatHour = (dtTxt: string) =>
-  new Date(dtTxt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+export const formatHour = (dt: number, timezone: number) => {
+  const localMs = (dt + timezone) * 1000
+  const date = new Date(localMs)
+  const hours = String(date.getUTCHours()).padStart(2, '0')
+  const minutes = String(date.getUTCMinutes()).padStart(2, '0')
+  return `${hours}:${minutes}`
+}
 
 export const formatDay = (dtTxt: string) =>
   new Date(dtTxt).toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short' })
 
+export const getTodayRange = (forecast: ForecastEntry[], weatherDt: number, timezone: number) => {
+  const todayUtc = new Date((weatherDt + timezone) * 1000)
+  const todayStr = `${todayUtc.getUTCFullYear()}-${String(todayUtc.getUTCMonth() + 1).padStart(2, '0')}-${String(todayUtc.getUTCDate()).padStart(2, '0')}`
+  const todayEntries = forecast.filter((e) => e.dt_txt.startsWith(todayStr))
+  if (todayEntries.length === 0) return null
+  return {
+    temp_max: Math.max(...todayEntries.map((e) => e.main.temp)),
+    temp_min: Math.min(...todayEntries.map((e) => e.main.temp)),
+    todayStr,
+  }
+}
+
 export const getDailyEntries = (forecast: ForecastEntry[]) => {
-  const byDay = forecast.reduce<Record<string, ForecastEntry[]>>((acc, entry) => {
+  const byDay = forecast
+    .reduce<Record<string, ForecastEntry[]>>((acc, entry) => {
     const day = entry.dt_txt.split(' ')[0]
     if (!acc[day]) acc[day] = []
     acc[day].push(entry)

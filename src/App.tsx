@@ -13,6 +13,7 @@ const App = () => {
     otherCities,
     weather,
     forecast,
+    forecastTimezone,
     forecastLoading,
     view,
     bgClass,
@@ -53,6 +54,7 @@ const App = () => {
             otherCities={otherCities}
             onCitySelect={handleCitySelect}
             forecast={forecast}
+            forecastTimezone={forecastTimezone}
             forecastLoading={forecastLoading}
             onForecastRequest={handleForecastRequest}
           />

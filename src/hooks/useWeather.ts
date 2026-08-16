@@ -9,6 +9,7 @@ export type GeoCity = {
 }
 
 export type WeatherData = {
+  dt: number
   name: string
   main: {
     temp: number
@@ -39,6 +40,9 @@ export type ForecastEntry = {
 
 export type ForecastData = {
   list: ForecastEntry[]
+  city: {
+    timezone: number
+  }
 }
 
 export type View = 'idle' | 'weather' | 'error-notfound' | 'error-empty' | 'loading'
@@ -54,6 +58,7 @@ export const useWeather = () => {
   const [otherCities, setOtherCities] = useState<GeoCity[]>([])
   const [weather, setWeather] = useState<WeatherData | null>(null)
   const [forecast, setForecast] = useState<ForecastEntry[] | null>(null)
+  const [forecastTimezone, setForecastTimezone] = useState<number>(0)
   const [forecastLoading, setForecastLoading] = useState(false)
   const [view, setView] = useState<View>('idle')
 
@@ -90,7 +95,7 @@ export const useWeather = () => {
           return
         }
         setForecast(null)
-        setOtherCities(cities.slice(1))
+        setForecastTimezone(0)
         setMainCity(cities[0])
         const weatherData = await fetchWeather(cities[0])
         if (weatherData) {
@@ -111,6 +116,7 @@ export const useWeather = () => {
         const weatherData = await fetchWeather(city)
         if (weatherData && mainCity) {
           setForecast(null)
+          setForecastTimezone(0)
           setOtherCities((prev) => [
             mainCity,
             ...prev.filter((c) => c.lat !== city.lat || c.lon !== city.lon),
@@ -136,6 +142,7 @@ export const useWeather = () => {
       if (!res.ok) throw new Error('Forecast fetch failed')
       const data = (await res.json()) as ForecastData
       setForecast(data.list)
+      setForecastTimezone(data.city.timezone)
     } catch {
       // silently fail — button stays visible to retry
     } finally {
@@ -149,6 +156,7 @@ export const useWeather = () => {
     otherCities,
     weather,
     forecast,
+    forecastTimezone,
     forecastLoading,
     view,
     bgClass,

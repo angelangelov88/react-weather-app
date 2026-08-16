@@ -1,7 +1,8 @@
 import { useState, useRef } from 'react'
 import type { ForecastEntry, GeoCity, WeatherData } from '../hooks/useWeather'
 import { getCountryName } from '../hooks/useWeather'
-import { iconUrl, formatHour, formatDay, getDailyEntries } from '../helpers/weatherHelpers'
+import { iconUrl, formatHour, formatDay, getDailyEntries, getTodayRange } from '../helpers/weatherHelpers'
+
 
 type Props = {
   weather: WeatherData
@@ -9,6 +10,7 @@ type Props = {
   otherCities: GeoCity[]
   onCitySelect: (city: GeoCity) => void
   forecast: ForecastEntry[] | null
+  forecastTimezone: number
   forecastLoading: boolean
   onForecastRequest: () => void
 }
@@ -19,6 +21,7 @@ const WeatherDisplay = ({
   otherCities,
   onCitySelect,
   forecast,
+  forecastTimezone,
   forecastLoading,
   onForecastRequest,
 }: Props) => {
@@ -32,6 +35,8 @@ const WeatherDisplay = ({
       onForecastRequest()
     }
   }
+
+  const todayRange = forecast ? getTodayRange(forecast, weather.dt, forecastTimezone) : null
 
   const handleHourlyToggle = () => {
     requestForecast()
@@ -64,6 +69,7 @@ const WeatherDisplay = ({
           />
           {Math.round(weather.main.temp)}°C
           <p className="weather-feels">Feels like {Math.round(weather.main.feels_like)}°C</p>
+
         </div>
         <div className="weather">{weather.weather[0].main}</div>
       </div>
@@ -91,7 +97,7 @@ const WeatherDisplay = ({
           <div className="forecast-scroll">
             {forecast.slice(0, 8).map((entry) => (
               <div className="forecast-item" key={entry.dt}>
-                <span className="forecast-time">{formatHour(entry.dt_txt)}</span>
+                <span className="forecast-time">{formatHour(entry.dt, forecastTimezone)}</span>
                 <img
                   src={iconUrl(entry.weather[0].icon)}
                   alt={entry.weather[0].main}
@@ -112,9 +118,9 @@ const WeatherDisplay = ({
         <div className="forecast-container">
           <p className="forecast-label">5-day forecast</p>
           <div className="forecast-scroll">
-            {getDailyEntries(forecast).map((entry) => (
+            {getDailyEntries(forecast).map((entry, i) => (
               <div className="forecast-item" key={entry.dt}>
-                <span className="forecast-time">{formatDay(entry.dt_txt)}</span>
+                <span className="forecast-time">{i === 0 && todayRange ? 'Today' : formatDay(entry.dt_txt)}</span>
                 <img
                   src={iconUrl(entry.weather[0].icon)}
                   alt={entry.weather[0].main}
