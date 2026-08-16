@@ -1,4 +1,4 @@
-import './App.css';
+import './App.css'
 import { useState } from 'react'
 import { CountryCodes } from './CountryCodes'
 
@@ -42,7 +42,7 @@ const App = () => {
         return
       }
       fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=10&appid=${API_KEY}`)
-        .then(res => res.json())
+        .then((res) => res.json())
         .then((result: GeoCity[]) => {
           setQuery('')
           setInitialMessageShown(false)
@@ -62,7 +62,7 @@ const App = () => {
 
   const searchWeather = (city: GeoCity) => {
     fetch(`${BASE}data/2.5/weather?lat=${city.lat}&lon=${city.lon}&units=metric&APPID=${API_KEY}`)
-      .then(res => res.json())
+      .then((res) => res.json())
       .then((result: WeatherData) => {
         setWeather(result)
         setLinksShown(false)
@@ -72,13 +72,28 @@ const App = () => {
   }
 
   const dateBuilder = (d: Date) => {
-    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+    const months = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ]
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
     return `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`
   }
 
   const getCountryName = (code: string) =>
-    CountryCodes.find(c => c.alpha2 === code.toLowerCase())?.name ?? code
+    CountryCodes.find((c) => c.alpha2 === code.toLowerCase())?.name ?? code
+
+  const [today] = useState(() => dateBuilder(new Date()))
 
   const getBgClass = () => {
     if (!weather) return 'app cold'
@@ -95,7 +110,7 @@ const App = () => {
             type="text"
             className="search-bar"
             placeholder="Search..."
-            onChange={e => setQuery(e.target.value)}
+            onChange={(e) => setQuery(e.target.value)}
             value={query}
             onKeyDown={search}
           />
@@ -110,14 +125,16 @@ const App = () => {
         {genericErrorShown && (
           <p className="error">Please make sure the name is correct and try again</p>
         )}
-        {emptyErrorShown && (
-          <p className="error">Please type a city name</p>
-        )}
+        {emptyErrorShown && <p className="error">Please type a city name</p>}
 
         {linksShown && cities.length > 0 && (
           <div className="linksContainer">
-            {cities.map((city, id) => (
-              <p className="linksCities" key={id} onClick={() => searchWeather(city)}>
+            {cities.map((city) => (
+              <p
+                className="linksCities"
+                key={`${city.name}-${city.lat}-${city.lon}`}
+                onClick={() => searchWeather(city)}
+              >
                 {city.name},{city.state ? ` ${city.state},` : ''} {getCountryName(city.country)}
               </p>
             ))}
@@ -132,7 +149,7 @@ const App = () => {
                 <p style={{ fontSize: '20px' }}>{getCountryName(weather.sys.country)}</p>
               </div>
               <br />
-              <div className="date">{dateBuilder(new Date())}</div>
+              <div className="date">{today}</div>
             </div>
             <div className="weather-box">
               <div className="temp">
