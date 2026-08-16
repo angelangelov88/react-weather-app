@@ -41,7 +41,7 @@ const App = () => {
         setEmptyErrorShown(true)
         return
       }
-      fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=10&appid=${API_KEY}`)
+    fetch(`${BASE}/geo/1.0/direct?q=${query}&limit=10&appid=${API_KEY}`)
         .then((res) => res.json())
         .then((result: GeoCity[]) => {
           setQuery('')
@@ -61,13 +61,20 @@ const App = () => {
   }
 
   const searchWeather = (city: GeoCity) => {
-    fetch(`${BASE}data/2.5/weather?lat=${city.lat}&lon=${city.lon}&units=metric&APPID=${API_KEY}`)
-      .then((res) => res.json())
+    fetch(`${BASE}/data/2.5/weather?lat=${city.lat}&lon=${city.lon}&units=metric&APPID=${API_KEY}`)
+      .then((res) => {
+        if (!res.ok) throw new Error('Weather fetch failed')
+        return res.json()
+      })
       .then((result: WeatherData) => {
         setWeather(result)
         setLinksShown(false)
         setWeatherShown(true)
         setGenericErrorShown(false)
+      })
+      .catch(() => {
+        setGenericErrorShown(true)
+        setLinksShown(false)
       })
   }
 
