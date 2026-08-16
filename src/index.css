@@ -40,7 +40,6 @@ main {
   margin-bottom: 5rem;
 }
 
-
 .search-box .search-bar {
   display: block;
   width: 100%;
@@ -118,7 +117,8 @@ main {
   text-shadow: 3px 3px rgba(50, 50, 70, 0.5);
 }
 
-.error, #initialMessage {
+.error,
+#initialMessage {
   color: red;
   background-color: rgba(255, 255, 255, 0.8);
   border-radius: 5px;
@@ -133,7 +133,6 @@ main {
 #initialMessage {
   color: white;
   background-color: rgba(50, 50, 70, 0.5);
-
 }
 
 .linksCities {
@@ -145,7 +144,6 @@ main {
   padding: 10px;
   margin-bottom: 5px;
   background-color: rgba(50, 50, 70, 0.8);
-
 }
 
 .linksContainer {
