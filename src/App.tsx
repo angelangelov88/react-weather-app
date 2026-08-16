@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import './App.css'
 import { useWeather } from './hooks/useWeather'
 import SearchBar from './components/SearchBar'
@@ -13,22 +12,14 @@ const dateBuilder = (d: Date) => {
   return `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`
 }
 
+const today = dateBuilder(new Date())
+
 const App = () => {
-  const [today] = useState(() => dateBuilder(new Date()))
-  const {
-    query,
-    setQuery,
-    otherCities,
-    weather,
-    view,
-    handleSearch,
-    handleCitySelect,
-    getCountryName,
-    getBgClass,
-  } = useWeather()
+  const { query, setQuery, otherCities, weather, view, bgClass, handleSearch, handleCitySelect } =
+    useWeather()
 
   return (
-    <div className={getBgClass()}>
+    <div className={bgClass}>
       <main>
         <SearchBar query={query} onChange={setQuery} onKeyDown={handleSearch} />
 
@@ -48,12 +39,15 @@ const App = () => {
           <p className="error">Please make sure the name is correct and try again</p>
         )}
 
-        {view === 'error-empty' && (
-          <p className="error">Please type a city name</p>
-        )}
+        {view === 'error-empty' && <p className="error">Please type a city name</p>}
 
         {view === 'weather' && weather && (
-          <WeatherDisplay weather={weather} today={today} getCountryName={getCountryName} otherCities={otherCities} onCitySelect={handleCitySelect} />
+          <WeatherDisplay
+            weather={weather}
+            today={today}
+            otherCities={otherCities}
+            onCitySelect={handleCitySelect}
+          />
         )}
       </main>
     </div>

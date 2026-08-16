@@ -1,21 +1,20 @@
 import type { GeoCity, WeatherData } from '../hooks/useWeather'
+import { getCountryName } from '../hooks/useWeather'
 
 type Props = {
   weather: WeatherData
   today: string
-  getCountryName: (code: string) => string
   otherCities: GeoCity[]
   onCitySelect: (city: GeoCity) => void
 }
 
-const WeatherDisplay = ({ weather, today, getCountryName, otherCities, onCitySelect }: Props) => (
+const WeatherDisplay = ({ weather, today, otherCities, onCitySelect }: Props) => (
   <div id="weather-container">
     <div className="location-box">
       <div className="location">
         {weather.name}
         <p style={{ fontSize: '20px' }}>{getCountryName(weather.sys.country)}</p>
       </div>
-      <br />
       <div className="date">{today}</div>
     </div>
     <div className="weather-box">
