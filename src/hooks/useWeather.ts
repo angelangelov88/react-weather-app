@@ -31,6 +31,7 @@ export const getCountryName = (code: string) =>
 
 export const useWeather = () => {
   const [query, setQuery] = useState('')
+  const [mainCity, setMainCity] = useState<GeoCity | null>(null)
   const [otherCities, setOtherCities] = useState<GeoCity[]>([])
   const [weather, setWeather] = useState<WeatherData | null>(null)
   const [view, setView] = useState<View>('idle')
@@ -68,6 +69,7 @@ export const useWeather = () => {
           return
         }
         setOtherCities(cities.slice(1))
+        setMainCity(cities[0])
         const weatherData = await fetchWeather(cities[0])
         if (weatherData) {
           setWeather(weatherData)
@@ -82,11 +84,15 @@ export const useWeather = () => {
 
   const handleCitySelect = useCallback(
     async (city: GeoCity) => {
-      setOtherCities([])
       setView('loading')
       try {
         const weatherData = await fetchWeather(city)
-        if (weatherData) {
+        if (weatherData && mainCity) {
+          setOtherCities((prev) => [
+            mainCity,
+            ...prev.filter((c) => c.lat !== city.lat || c.lon !== city.lon),
+          ])
+          setMainCity(city)
           setWeather(weatherData)
           setView('weather')
         }
@@ -94,7 +100,7 @@ export const useWeather = () => {
         setView('error-notfound')
       }
     },
-    [fetchWeather]
+    [fetchWeather, mainCity]
   )
 
   return { query, setQuery, otherCities, weather, view, bgClass, handleSearch, handleCitySelect }
