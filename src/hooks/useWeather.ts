@@ -54,8 +54,8 @@ export { getCountryName } from '../helpers/weatherHelpers'
 
 export const useWeather = () => {
   const [query, setQuery] = useState('')
+  const [allCities, setAllCities] = useState<GeoCity[]>([])
   const [mainCity, setMainCity] = useState<GeoCity | null>(null)
-  const [otherCities, setOtherCities] = useState<GeoCity[]>([])
   const [weather, setWeather] = useState<WeatherData | null>(null)
   const [forecast, setForecast] = useState<ForecastEntry[] | null>(null)
   const [forecastTimezone, setForecastTimezone] = useState<number>(0)
@@ -96,6 +96,7 @@ export const useWeather = () => {
         }
         setForecast(null)
         setForecastTimezone(0)
+        setAllCities(cities)
         setMainCity(cities[0])
         const weatherData = await fetchWeather(cities[0])
         if (weatherData) {
@@ -114,13 +115,9 @@ export const useWeather = () => {
       setView('loading')
       try {
         const weatherData = await fetchWeather(city)
-        if (weatherData && mainCity) {
+        if (weatherData) {
           setForecast(null)
           setForecastTimezone(0)
-          setOtherCities((prev) => [
-            mainCity,
-            ...prev.filter((c) => c.lat !== city.lat || c.lon !== city.lon),
-          ])
           setMainCity(city)
           setWeather(weatherData)
           setView('weather')
@@ -129,7 +126,7 @@ export const useWeather = () => {
         setView('error-notfound')
       }
     },
-    [fetchWeather, mainCity]
+    [fetchWeather]
   )
 
   const handleForecastRequest = useCallback(async () => {
@@ -149,6 +146,8 @@ export const useWeather = () => {
       setForecastLoading(false)
     }
   }, [mainCity])
+
+  const otherCities = allCities.filter((c) => c.lat !== mainCity?.lat || c.lon !== mainCity?.lon)
 
   return {
     query,
