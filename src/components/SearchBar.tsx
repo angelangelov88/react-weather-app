@@ -19,6 +19,7 @@ const SearchBar = ({ query, onChange, onKeyDown }: Props) => {
       <input
         ref={inputRef}
         type="text"
+        autoFocus
         className="search-bar"
         aria-label="Search for a city"
         placeholder="Search..."

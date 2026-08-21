@@ -1,6 +1,8 @@
 import './App.css'
 import { useWeather } from './hooks/useWeather'
+import { useNearby } from './hooks/useNearby'
 import { dateBuilder } from './helpers/weatherHelpers'
+import { getCountryName } from './helpers/weatherHelpers'
 import SearchBar from './components/SearchBar'
 import WeatherDisplay from './components/WeatherDisplay'
 
@@ -23,6 +25,8 @@ const App = () => {
     mainCityKey,
   } = useWeather()
 
+  const nearbyCities = useNearby()
+
   return (
     <div className={bgClass}>
       <main>
@@ -31,6 +35,21 @@ const App = () => {
         {view === 'idle' && (
           <div id="initialMessage">
             <p>Please type a city name and press Enter to get the current weather</p>
+          </div>
+        )}
+
+        {view === 'idle' && nearbyCities.length > 0 && (
+          <div className="linksContainer">
+            <p className="other-cities-label">Nearby</p>
+            {nearbyCities.map((city) => (
+              <button
+                key={`${city.lat}-${city.lon}`}
+                className="linksCities"
+                onClick={() => handleCitySelect(city)}
+              >
+                {city.name}{city.state ? `, ${city.state}` : ''}, {getCountryName(city.country)}
+              </button>
+            ))}
           </div>
         )}
 
